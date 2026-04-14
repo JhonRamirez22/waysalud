@@ -21,6 +21,100 @@
     activeCalendar: null
   };
 
+  const UI_TEXT = {
+    es: {
+      login: "Ingresar",
+      searchDoctors: "Buscar médicos",
+      myAppointments: "Mis citas",
+      myHistory: "Mi historia",
+      urgent: "Urgencias",
+      myProfile: "Mi perfil",
+      logout: "Cerrar sesión",
+      myAgenda: "Mi agenda",
+      myPatients: "Mis pacientes",
+      newConsultation: "Nueva consulta",
+      dashboard: "Dashboard",
+      users: "Usuarios",
+      specialties: "Especialidades",
+      allRecords: "Todas las historias",
+      loginTitle: "Ingreso a MediConnect",
+      loginSubtitle: "Acceso por rol con sesión simulada en localStorage",
+      email: "Email",
+      password: "Contraseña",
+      enterAsPatient: "Entrar como Paciente",
+      enterAsDoctor: "Entrar como Médico",
+      enterAsAdmin: "Entrar como Admin",
+      accessDenied: "Acceso denegado",
+      backToPanel: "Volver a mi panel",
+      homeTitle: "Teleconsulta segura en minutos",
+      homeSubtitle: "Conecta con especialistas por video, chat o consulta presencial.",
+      findSpecialist: "Encontrar especialista",
+      urgentNow: "Consulta urgente ahora"
+    },
+    en: {
+      login: "Login",
+      searchDoctors: "Find doctors",
+      myAppointments: "My appointments",
+      myHistory: "My record",
+      urgent: "Urgent care",
+      myProfile: "My profile",
+      logout: "Log out",
+      myAgenda: "My agenda",
+      myPatients: "My patients",
+      newConsultation: "New consultation",
+      dashboard: "Dashboard",
+      users: "Users",
+      specialties: "Specialties",
+      allRecords: "All records",
+      loginTitle: "MediConnect login",
+      loginSubtitle: "Role-based access with simulated localStorage session",
+      email: "Email",
+      password: "Password",
+      enterAsPatient: "Enter as Patient",
+      enterAsDoctor: "Enter as Doctor",
+      enterAsAdmin: "Enter as Admin",
+      accessDenied: "Access denied",
+      backToPanel: "Back to my panel",
+      homeTitle: "Secure teleconsultation in minutes",
+      homeSubtitle: "Connect with specialists by video, chat, or in-person consultation.",
+      findSpecialist: "Find specialist",
+      urgentNow: "Urgent consultation now"
+    },
+    pt: {
+      login: "Entrar",
+      searchDoctors: "Buscar médicos",
+      myAppointments: "Minhas consultas",
+      myHistory: "Meu histórico",
+      urgent: "Urgências",
+      myProfile: "Meu perfil",
+      logout: "Sair",
+      myAgenda: "Minha agenda",
+      myPatients: "Meus pacientes",
+      newConsultation: "Nova consulta",
+      dashboard: "Painel",
+      users: "Usuários",
+      specialties: "Especialidades",
+      allRecords: "Todos os prontuários",
+      loginTitle: "Acesso ao MediConnect",
+      loginSubtitle: "Acesso por função com sessão simulada em localStorage",
+      email: "E-mail",
+      password: "Senha",
+      enterAsPatient: "Entrar como Paciente",
+      enterAsDoctor: "Entrar como Médico",
+      enterAsAdmin: "Entrar como Admin",
+      accessDenied: "Acesso negado",
+      backToPanel: "Voltar ao meu painel",
+      homeTitle: "Teleconsulta segura em minutos",
+      homeSubtitle: "Conecte-se com especialistas por vídeo, chat ou consulta presencial.",
+      findSpecialist: "Encontrar especialista",
+      urgentNow: "Consulta urgente agora"
+    }
+  };
+
+  function tr(key) {
+    return UI_TEXT[state.lang]?.[key] || UI_TEXT.es[key] || key;
+  }
+
   const EXTRA_SPECIALISTS = [
     { id: 10, fullName: "Dra. Laura Méndez", specialty: "Medicina general", price: 85000, rating: 4.8, bio: "Seguimiento integral de salud familiar." },
     { id: 11, fullName: "Dr. Felipe Ruiz", specialty: "Neurología", price: 170000, rating: 4.5, bio: "Atención de cefaleas y trastornos neurológicos." },
@@ -146,9 +240,12 @@
       <div id="toast" class="toast"></div>
     `;
 
-    document.getElementById("language-selector")?.addEventListener("change", (e) => {
+    document.getElementById("language-selector")?.addEventListener("change", async (e) => {
       state.lang = e.target.value;
       localStorage.setItem("mediconnect_lang", state.lang);
+      if (window.i18next) {
+        await window.i18next.changeLanguage(state.lang);
+      }
       renderShell();
       onRouteChange();
     });
@@ -164,35 +261,35 @@
   }
 
   function buildRoleNav(currentPath, user) {
-    if (!user) return navLink("/login", "Ingresar", currentPath);
+  if (!user) return navLink("/login", tr("login"), currentPath);
 
     if (user.rol === "paciente") {
       return [
-        navLink("/buscar", "Buscar médicos", currentPath),
-        navLink("/panel", "Mis citas", currentPath),
-        navLink("/mi-historia", "Mi historia", currentPath),
-        navLink("/urgencias", "Urgencias", currentPath),
-        navLink("/panel", "Mi perfil", currentPath),
-        `<a href="#" class="nav-link" data-logout="1">Cerrar sesión</a>`
+        navLink("/buscar", tr("searchDoctors"), currentPath),
+        navLink("/panel", tr("myAppointments"), currentPath),
+        navLink("/mi-historia", tr("myHistory"), currentPath),
+        navLink("/urgencias", tr("urgent"), currentPath),
+        navLink("/panel", tr("myProfile"), currentPath),
+        `<a href="#" class="nav-link" data-logout="1">${tr("logout")}</a>`
       ].join("");
     }
 
     if (user.rol === "medico") {
       return [
-        navLink("/mi-agenda", "Mi agenda", currentPath),
-        navLink("/mis-pacientes", "Mis pacientes", currentPath),
-        navLink("/panel-medico", "Nueva consulta", currentPath),
-        navLink("/panel-medico", "Mi perfil", currentPath),
-        `<a href="#" class="nav-link" data-logout="1">Cerrar sesión</a>`
+        navLink("/mi-agenda", tr("myAgenda"), currentPath),
+        navLink("/mis-pacientes", tr("myPatients"), currentPath),
+        navLink("/panel-medico", tr("newConsultation"), currentPath),
+        navLink("/panel-medico", tr("myProfile"), currentPath),
+        `<a href="#" class="nav-link" data-logout="1">${tr("logout")}</a>`
       ].join("");
     }
 
     return [
-      navLink("/admin", "Dashboard", currentPath),
-      navLink("/admin/usuarios", "Usuarios", currentPath),
-      navLink("/admin/especialidades", "Especialidades", currentPath),
-      navLink("/admin", "Todas las historias", currentPath),
-      `<a href="#" class="nav-link" data-logout="1">Cerrar sesión</a>`
+      navLink("/admin", tr("dashboard"), currentPath),
+      navLink("/admin/usuarios", tr("users"), currentPath),
+      navLink("/admin/especialidades", tr("specialties"), currentPath),
+      navLink("/admin", tr("allRecords"), currentPath),
+      `<a href="#" class="nav-link" data-logout="1">${tr("logout")}</a>`
     ].join("");
   }
 
@@ -273,17 +370,17 @@
 
     view.innerHTML = `
       <section class="card" style="max-width:560px; margin:0 auto;">
-        <h2 class="section-title">Ingreso a MediConnect</h2>
-        <p class="section-subtitle">Acceso por rol con sesión simulada en localStorage</p>
+        <h2 class="section-title">${tr("loginTitle")}</h2>
+        <p class="section-subtitle">${tr("loginSubtitle")}</p>
         <form id="login-form" class="grid" style="gap:0.6rem;">
-          <input id="login-email" type="email" placeholder="Email" required />
-          <input id="login-pass" type="password" placeholder="Contraseña" required />
-          <button class="btn-primary" type="submit">Ingresar</button>
+          <input id="login-email" type="email" placeholder="${tr("email")}" required />
+          <input id="login-pass" type="password" placeholder="${tr("password")}" required />
+          <button class="btn-primary" type="submit">${tr("login")}</button>
         </form>
         <div class="inline-actions" style="margin-top:0.8rem;">
-          <button class="btn-outline" data-demo-login="paciente">Entrar como Paciente</button>
-          <button class="btn-outline" data-demo-login="medico">Entrar como Médico</button>
-          <button class="btn-outline" data-demo-login="admin">Entrar como Admin</button>
+          <button class="btn-outline" data-demo-login="paciente">${tr("enterAsPatient")}</button>
+          <button class="btn-outline" data-demo-login="medico">${tr("enterAsDoctor")}</button>
+          <button class="btn-outline" data-demo-login="admin">${tr("enterAsAdmin")}</button>
         </div>
       </section>
     `;
@@ -312,9 +409,9 @@
   function renderAccessDenied(reason, user) {
     document.getElementById("view").innerHTML = `
       <section class="card" style="max-width:760px; margin:0 auto; text-align:center;">
-        <h2 class="section-title">Acceso denegado</h2>
+        <h2 class="section-title">${tr("accessDenied")}</h2>
         <p>${reason || "No cuentas con permisos para esta ruta."}</p>
-        <button class="btn-primary" id="back-panel">Volver a mi panel</button>
+        <button class="btn-primary" id="back-panel">${tr("backToPanel")}</button>
       </section>
     `;
     document.getElementById("back-panel").addEventListener("click", () => {
@@ -325,11 +422,11 @@
   function renderHome() {
     document.getElementById("view").innerHTML = `
       <section class="hero">
-        <h1>Teleconsulta segura en minutos</h1>
-        <p>Conecta con especialistas por video, chat o consulta presencial.</p>
+        <h1>${tr("homeTitle")}</h1>
+        <p>${tr("homeSubtitle")}</p>
         <div class="inline-actions">
-          <a class="btn-primary" href="#/buscar">Encontrar especialista</a>
-          <a class="btn-danger" href="#/urgencias">Consulta urgente ahora</a>
+          <a class="btn-primary" href="#/buscar">${tr("findSpecialist")}</a>
+          <a class="btn-danger" href="#/urgencias">${tr("urgentNow")}</a>
         </div>
       </section>
     `;

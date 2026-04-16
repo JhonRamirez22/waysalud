@@ -389,9 +389,13 @@
               <div class="lang-select">
                 <img class="flag" src="${flagByLang(state.lang)}" alt="lang" />
                 <select id="language-selector">
-                  <option value="es" ${state.lang === "es" ? "selected" : ""}>ES</option>
-                  <option value="en" ${state.lang === "en" ? "selected" : ""}>EN</option>
-                  <option value="pt" ${state.lang === "pt" ? "selected" : ""}>PT</option>
+                  <option value="es" ${state.lang === "es" ? "selected" : ""}>Español</option>
+                  <option value="en" ${state.lang === "en" ? "selected" : ""}>Inglés</option>
+                  <option value="de" ${state.lang === "de" ? "selected" : ""}>Alemán</option>
+                  <option value="it" ${state.lang === "it" ? "selected" : ""}>Italiano</option>
+                  <option value="pl" ${state.lang === "pl" ? "selected" : ""}>Polaco</option>
+                  <option value="pt" ${state.lang === "pt" ? "selected" : ""}>Portugués</option>
+                  <option value="tr" ${state.lang === "tr" ? "selected" : ""}>Turco</option>
                 </select>
               </div>
 
@@ -480,7 +484,16 @@
   }
 
   function flagByLang(lang) {
-    return `https://flagcdn.com/24x18/${lang === "en" ? "us" : lang === "pt" ? "br" : "co"}.png`;
+    const byLang = {
+      es: "co",
+      en: "us",
+      de: "de",
+      it: "it",
+      pl: "pl",
+      pt: "br",
+      tr: "tr"
+    };
+    return `https://flagcdn.com/24x18/${byLang[lang] || "co"}.png`;
   }
 
   function onRouteChange() {

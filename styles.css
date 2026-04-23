@@ -261,9 +261,15 @@ main {
 
 .hero-split {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   gap: clamp(1rem, 2vw, 2rem);
-  align-items: center;
+  align-items: stretch;
+}
+
+.hero-split > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hero-badge {
@@ -296,19 +302,100 @@ main {
   border: 1px solid var(--ws-borde);
   box-shadow: var(--ws-sombra);
   background: var(--ws-fondo);
-  min-height: 300px;
+  min-height: 360px;
   position: relative;
   overflow: hidden;
+  display: grid;
+  place-items: center;
 }
 
 .hero-mockup img,
 .context-media {
   width: 100%;
   height: 100%;
-  min-height: 220px;
+  min-height: 100%;
   object-fit: cover;
   border-radius: inherit;
   border: 1px solid var(--ws-borde);
+}
+
+.login-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.login-hero {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ws-teal-bg) 60%, #fff 40%), var(--ws-fondo));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.login-title {
+  margin: 0.4rem 0 0.75rem;
+}
+
+.login-copy {
+  max-width: 60ch;
+}
+
+.login-points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+}
+
+.login-point {
+  background: var(--ws-fondo);
+  border: 1px solid var(--ws-borde);
+  border-radius: var(--ws-radio-card);
+  padding: 0.9rem;
+  display: grid;
+  gap: 0.3rem;
+  min-height: 100%;
+}
+
+.login-point span {
+  color: var(--ws-texto-suave);
+  font-size: 0.92rem;
+}
+
+.login-card {
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+}
+
+.login-form-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.login-roles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.login-role {
+  width: 100%;
+  text-align: left;
+  background: var(--ws-fondo-gris);
+  border: 1px solid var(--ws-borde);
+  border-radius: var(--ws-radio-card);
+  padding: 0.9rem;
+  display: grid;
+  gap: 0.25rem;
+  color: var(--ws-texto);
+}
+
+.login-role span {
+  color: var(--ws-texto-suave);
+  font-size: 0.86rem;
 }
 
 .mockup-badge {
@@ -484,6 +571,7 @@ main {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   margin-top: 1rem;
+  align-items: stretch;
 }
 
 .feature-visual {
@@ -509,6 +597,10 @@ main {
 
 .modalidad-card {
   border-top: 3px solid var(--ws-azul);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
 }
 
 .learn-more {
@@ -681,7 +773,7 @@ button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 180px;
+  min-height: 190px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -695,7 +787,6 @@ button {
 .bento-cell:nth-child(1) {
   background: var(--ws-azul);
   color: var(--ws-fondo);
-  grid-row: span 2;
 }
 
 .bento-cell:nth-child(2) {
@@ -713,6 +804,10 @@ button {
 .bento-cell:nth-child(5) {
   background: var(--ws-sidebar);
   color: var(--ws-fondo);
+}
+
+.bento-cell:nth-child(6) {
+  background: color-mix(in srgb, var(--ws-teal-bg) 78%, var(--ws-fondo) 22%);
 }
 
 .bento-arrow {
@@ -1087,8 +1182,7 @@ th {
   }
 
   .contact-grid,
-  .feature-pane,
-  .footer-grid {
+  .feature-pane {
     grid-template-columns: 1fr;
   }
 }
@@ -1111,7 +1205,8 @@ th {
   .grid-3,
   .segment-grid,
   .chat-layout,
-  .bento-grid {
+  .bento-grid,
+  .login-page {
     grid-template-columns: 1fr;
   }
 
@@ -1140,7 +1235,9 @@ th {
 
   .form-row,
   .counter-grid,
-  .modalidades-grid {
+  .modalidades-grid,
+  .login-points,
+  .login-roles {
     grid-template-columns: 1fr;
   }
 

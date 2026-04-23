@@ -1063,26 +1063,56 @@
       return;
     }
 
-    renderHome();
-    view.insertAdjacentHTML(
-      "afterbegin",
-      `
-      <section class="card" style="max-width:680px; margin:0 auto 1rem;">
-        <h2 class="section-title">Ingreso a WaySalud</h2>
-        <p class="section-subtitle">Acceso por rol con sesión simulada en localStorage</p>
-        <form id="login-form" class="grid" style="gap:0.6rem;">
-          <input id="login-email" type="email" placeholder="${tr("email")}" required />
-          <input id="login-pass" type="password" placeholder="${tr("password")}" required />
-          <button class="btn-primary" type="submit">${tr("login")}</button>
-        </form>
-        <div class="inline-actions" style="margin-top:0.8rem;">
-          <button class="btn-outline" data-demo-login="paciente">${tr("enterAsPatient")}</button>
-          <button class="btn-outline" data-demo-login="medico">${tr("enterAsDoctor")}</button>
-          <button class="btn-outline" data-demo-login="admin">${tr("enterAsAdmin")}</button>
-        </div>
+    view.innerHTML = `
+      <section class="login-page">
+        <article class="login-hero card">
+          <div>
+            <span class="hero-badge">WaySalud Plataforma Tecnológica</span>
+            <h1 class="login-title">${tr("loginTitle")}</h1>
+            <p class="section-subtitle login-copy">${tr("loginSubtitle")}</p>
+            <p class="login-copy">Cuidamos la complejidad para que pacientes, médicos y administradores trabajen en un solo flujo, con acceso por rol y una experiencia clara desde el primer clic.</p>
+          </div>
+          <div class="login-points">
+            <div class="login-point">
+              <strong>Paciente</strong>
+              <span>Agenda, videollamada e historia clínica.</span>
+            </div>
+            <div class="login-point">
+              <strong>Médico</strong>
+              <span>Agenda, consulta y seguimiento continuo.</span>
+            </div>
+            <div class="login-point">
+              <strong>Admin</strong>
+              <span>Usuarios, reportes y configuración central.</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card login-card">
+          <h2 class="section-title">Ingreso por rol</h2>
+          <p class="section-subtitle">Selecciona tu perfil y entra con una sesión simulada.</p>
+          <form id="login-form" class="login-form-grid">
+            <input id="login-email" type="email" placeholder="${tr("email")}" required />
+            <input id="login-pass" type="password" placeholder="${tr("password")}" required />
+            <button class="btn-primary" type="submit">${tr("login")}</button>
+          </form>
+          <div class="login-roles">
+            <button class="login-role" type="button" data-demo-login="paciente">
+              <strong>${tr("enterAsPatient")}</strong>
+              <span>laura@waysalud.com</span>
+            </button>
+            <button class="login-role" type="button" data-demo-login="medico">
+              <strong>${tr("enterAsDoctor")}</strong>
+              <span>carlos@waysalud.com</span>
+            </button>
+            <button class="login-role" type="button" data-demo-login="admin">
+              <strong>${tr("enterAsAdmin")}</strong>
+              <span>admin@waysalud.com</span>
+            </button>
+          </div>
+        </article>
       </section>
-    `
-    );
+    `;
 
     view.querySelector("#login-form").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -1269,6 +1299,7 @@
           <a class="bento-cell" href="#/mi-historia"><span class="bento-arrow">↗</span><h3>Historia clínica</h3><p>Consulta tu evolución médica.</p></a>
           <a class="bento-cell" href="#/planes"><span class="bento-arrow">↗</span><h3>Planes</h3><p>Opciones para profesionales e instituciones.</p></a>
           <a class="bento-cell" href="#/urgencias"><span class="bento-arrow">↗</span><h3>Urgencias</h3><p>Conexión inmediata con triage digital.</p></a>
+          <a class="bento-cell" href="#/login"><span class="bento-arrow">↗</span><h3>Acceso por roles</h3><p>Ingresa como paciente, médico o admin.</p></a>
         </div>
       </section>
     `;

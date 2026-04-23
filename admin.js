@@ -244,11 +244,11 @@ function renderAdminDashboard(container) {
     <section class="card">
       <h2 class="section-title">${ta("adminPanel")}</h2>
       <div class="grid grid-3">
-        <article class="stat-box"><strong>${roles.pacientes}</strong><div>${ta("patients")}</div></article>
-        <article class="stat-box"><strong>${roles.medicos}</strong><div>${ta("doctors")}</div></article>
-        <article class="stat-box"><strong>${roles.admins}</strong><div>${ta("admins")}</div></article>
-        <article class="stat-box"><strong>${citas.length}</strong><div>${ta("monthConsults")}</div></article>
-        <article class="stat-box"><strong>${especialidades}</strong><div>${ta("activeSpecialties")}</div></article>
+        <article class="stat-card"><span class="stat-label">${ta("patients")}</span><strong class="stat-value">${roles.pacientes}</strong><span class="stat-delta">+6% mensual</span></article>
+        <article class="stat-card"><span class="stat-label">${ta("doctors")}</span><strong class="stat-value">${roles.medicos}</strong><span class="stat-delta">Capacidad activa</span></article>
+        <article class="stat-card"><span class="stat-label">${ta("admins")}</span><strong class="stat-value">${roles.admins}</strong><span class="stat-delta">Control operativo</span></article>
+        <article class="stat-card"><span class="stat-label">${ta("monthConsults")}</span><strong class="stat-value">${citas.length}</strong><span class="stat-delta">Flujo estable</span></article>
+        <article class="stat-card"><span class="stat-label">${ta("activeSpecialties")}</span><strong class="stat-value">${especialidades}</strong><span class="stat-delta">Cobertura clínica</span></article>
       </div>
     </section>
 

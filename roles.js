@@ -10,14 +10,14 @@ const STORAGE_KEYS = {
 };
 
 const USUARIOS_BASE = [
-  { id: 1, nombre: "Dr. Carlos Ruiz", email: "carlos@mediconnect.co", password: "medico123", rol: "medico", especialidad: "Cardiología", pacientesIds: [3, 4, 6] },
-  { id: 2, nombre: "Dra. Ana Gómez", email: "ana@mediconnect.co", password: "medico123", rol: "medico", especialidad: "Dermatología", pacientesIds: [7, 8] },
-  { id: 3, nombre: "Laura Martínez", email: "laura@mediconnect.co", password: "paciente123", rol: "paciente", historiaId: 101 },
-  { id: 4, nombre: "Pedro Salcedo", email: "pedro@mediconnect.co", password: "paciente123", rol: "paciente", historiaId: 102 },
-  { id: 5, nombre: "Admin Sistema", email: "admin@mediconnect.co", password: "admin123", rol: "admin" },
-  { id: 6, nombre: "Diana Torres", email: "diana@mediconnect.co", password: "paciente123", rol: "paciente", historiaId: 103 },
-  { id: 7, nombre: "Miguel Peña", email: "miguel@mediconnect.co", password: "paciente123", rol: "paciente", historiaId: 104 },
-  { id: 8, nombre: "Sofía Rincón", email: "sofia@mediconnect.co", password: "paciente123", rol: "paciente", historiaId: 105 }
+  { id: 1, nombre: "Dr. Carlos Ruiz", email: "carlos@waysalud.com", password: "medico123", rol: "medico", especialidad: "Cardiología", pacientesIds: [3, 4, 6] },
+  { id: 2, nombre: "Dra. Ana Gómez", email: "ana@waysalud.com", password: "medico123", rol: "medico", especialidad: "Dermatología", pacientesIds: [7, 8] },
+  { id: 3, nombre: "Laura Martínez", email: "laura@waysalud.com", password: "paciente123", rol: "paciente", historiaId: 101 },
+  { id: 4, nombre: "Pedro Salcedo", email: "pedro@waysalud.com", password: "paciente123", rol: "paciente", historiaId: 102 },
+  { id: 5, nombre: "Admin Sistema", email: "admin@waysalud.com", password: "admin123", rol: "admin" },
+  { id: 6, nombre: "Diana Torres", email: "diana@waysalud.com", password: "paciente123", rol: "paciente", historiaId: 103 },
+  { id: 7, nombre: "Miguel Peña", email: "miguel@waysalud.com", password: "paciente123", rol: "paciente", historiaId: 104 },
+  { id: 8, nombre: "Sofía Rincón", email: "sofia@waysalud.com", password: "paciente123", rol: "paciente", historiaId: 105 }
 ].map((u) => ({ ...u, activo: true }));
 
 const HISTORIAS_BASE = [

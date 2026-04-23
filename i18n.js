@@ -3,7 +3,7 @@
   const resources = {
     es: {
       translation: {
-        appName: "MediConnect",
+        appName: "WaySalud",
         nav: {
           home: "Inicio",
           search: "Buscar",
@@ -51,7 +51,7 @@
           subtitle: "Conecta con especialistas certificados por videollamada, chat o consulta presencial.",
           cta: "Encontrar especialista",
           urgentCta: "Consulta urgente ahora",
-          whyTitle: "¿Por qué MediConnect?",
+          whyTitle: "¿Por qué WaySalud?",
           why1: "Atención remota 24/7",
           why2: "Profesionales verificados",
           why3: "Historia clínica digital",
@@ -166,7 +166,7 @@
     },
     en: {
       translation: {
-        appName: "MediConnect",
+        appName: "WaySalud",
         nav: {
           home: "Home",
           search: "Search",
@@ -214,7 +214,7 @@
           subtitle: "Connect with certified specialists via video call, chat, or in-person care.",
           cta: "Find specialist",
           urgentCta: "Urgent consultation now",
-          whyTitle: "Why MediConnect?",
+          whyTitle: "Why WaySalud?",
           why1: "24/7 remote care",
           why2: "Verified professionals",
           why3: "Digital medical record",
@@ -329,7 +329,7 @@
     },
     pt: {
       translation: {
-        appName: "MediConnect",
+        appName: "WaySalud",
         nav: {
           home: "Início",
           search: "Buscar",
@@ -377,7 +377,7 @@
           subtitle: "Conecte-se com especialistas certificados por vídeo, chat ou consulta presencial.",
           cta: "Encontrar especialista",
           urgentCta: "Consulta urgente agora",
-          whyTitle: "Por que MediConnect?",
+          whyTitle: "Por que WaySalud?",
           why1: "Atendimento remoto 24/7",
           why2: "Profissionais verificados",
           why3: "Prontuário digital",

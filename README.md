@@ -1,4 +1,4 @@
-# MediConnect (Prototipo SPA)
+# WaySalud (Prototipo SPA)
 
 Plataforma de telemedicina en **HTML + CSS + JavaScript vanilla** con enrutamiento por hash y datos simulados en `localStorage`.
 
@@ -37,9 +37,9 @@ Plataforma de telemedicina en **HTML + CSS + JavaScript vanilla** con enrutamien
 1. Abrir `index.html` en navegador (o Live Server).
 2. Entrar por `#/login`.
 3. Usar accesos rápidos de demo:
-   - Paciente: `laura@mediconnect.co / paciente123`
-   - Médico: `carlos@mediconnect.co / medico123`
-   - Admin: `admin@mediconnect.co / admin123`
+   - Paciente: `laura@waysalud.com / paciente123`
+   - Médico: `carlos@waysalud.com / medico123`
+   - Admin: `admin@waysalud.com / admin123`
 
 ## Notas
 
@@ -47,5 +47,3 @@ Plataforma de telemedicina en **HTML + CSS + JavaScript vanilla** con enrutamien
 - Los adjuntos se simulan guardando solo nombre de archivo.
 - La videollamada usa Jitsi en modo embebido sin API key.
 - Las imágenes se descargaron desde Unsplash y se almacenan localmente en `assets/images`.
-# waysalud
-# waysalud

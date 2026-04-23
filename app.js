@@ -1,5 +1,5 @@
 // ==============================
-// MediConnect SPA (Vanilla JS)
+// WaySalud SPA (Vanilla JS)
 // ==============================
 
 (() => {
@@ -37,7 +37,7 @@
       users: "Usuarios",
       specialties: "Especialidades",
       allRecords: "Todas las historias",
-      loginTitle: "Ingreso a MediConnect",
+      loginTitle: "Ingreso a WaySalud",
       loginSubtitle: "Acceso por rol con sesión simulada en localStorage",
       email: "Email",
       password: "Contraseña",
@@ -125,7 +125,7 @@
       users: "Users",
       specialties: "Specialties",
       allRecords: "All records",
-      loginTitle: "MediConnect login",
+      loginTitle: "WaySalud login",
       loginSubtitle: "Role-based access with simulated localStorage session",
       email: "Email",
       password: "Password",
@@ -213,7 +213,7 @@
       users: "Usuários",
       specialties: "Especialidades",
       allRecords: "Todos os prontuários",
-      loginTitle: "Acesso ao MediConnect",
+      loginTitle: "Acesso ao WaySalud",
       loginSubtitle: "Acesso por função com sessão simulada em localStorage",
       email: "E-mail",
       password: "Senha",
@@ -301,7 +301,7 @@
       users: "Benutzer",
       specialties: "Fachrichtungen",
       allRecords: "Alle Akten",
-      loginTitle: "MediConnect Anmeldung",
+      loginTitle: "WaySalud Anmeldung",
       loginSubtitle: "Rollenbasierter Zugang mit simulierter Sitzung in localStorage",
       email: "E-Mail",
       password: "Passwort",
@@ -389,7 +389,7 @@
       users: "Utenti",
       specialties: "Specialità",
       allRecords: "Tutte le cartelle",
-      loginTitle: "Accesso a MediConnect",
+      loginTitle: "Accesso a WaySalud",
       loginSubtitle: "Accesso per ruolo con sessione simulata in localStorage",
       email: "Email",
       password: "Password",
@@ -477,7 +477,7 @@
       users: "Użytkownicy",
       specialties: "Specjalizacje",
       allRecords: "Wszystkie historie",
-      loginTitle: "Logowanie do MediConnect",
+      loginTitle: "Logowanie do WaySalud",
       loginSubtitle: "Dostęp wg roli z symulowaną sesją w localStorage",
       email: "Email",
       password: "Hasło",
@@ -565,7 +565,7 @@
       users: "Kullanıcılar",
       specialties: "Uzmanlıklar",
       allRecords: "Tüm kayıtlar",
-      loginTitle: "MediConnect girişi",
+      loginTitle: "WaySalud girişi",
       loginSubtitle: "Rol bazlı erişim ve localStorage üzerinde simüle oturum",
       email: "E-posta",
       password: "Şifre",
@@ -717,8 +717,18 @@
     return new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);
   }
 
+  function roleClass(role) {
+    if (role === "admin") return "badge-admin";
+    if (role === "medico") return "badge-medico";
+    return "badge-paciente";
+  }
+
   function navLink(path, label, currentPath) {
     return `<a class="nav-link ${path === currentPath ? "active" : ""}" href="#${path}">${label}</a>`;
+  }
+
+  function navItem(path, label, currentPath, icon) {
+    return `<a class="nav-item ${path === currentPath ? "active" : ""}" href="#${path}"><i class="nav-icon" data-lucide="${icon}"></i><span>${label}</span></a>`;
   }
 
   function renderShell() {
@@ -726,61 +736,133 @@
     const user = getSession();
     const path = getPath();
 
-    root.innerHTML = `
-      <div class="app-shell">
-        <header class="navbar">
-          <div class="container navbar-inner">
-            <a class="logo" href="#/${user ? "" : "login"}">
-              <i data-lucide="cross"></i>
-              <span>MediConnect</span>
-            </a>
-
-            <nav class="nav-links">${buildRoleNav(path, user)}</nav>
-
-            <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap; justify-content:flex-end;">
-              <div class="lang-select">
-                <img class="flag" src="${flagByLang(state.lang)}" alt="lang" />
-                <select id="language-selector">
-                  <option value="es" ${state.lang === "es" ? "selected" : ""}>Español</option>
-                  <option value="en" ${state.lang === "en" ? "selected" : ""}>Inglés</option>
-                  <option value="de" ${state.lang === "de" ? "selected" : ""}>Alemán</option>
-                  <option value="it" ${state.lang === "it" ? "selected" : ""}>Italiano</option>
-                  <option value="pl" ${state.lang === "pl" ? "selected" : ""}>Polaco</option>
-                  <option value="pt" ${state.lang === "pt" ? "selected" : ""}>Portugués</option>
-                  <option value="tr" ${state.lang === "tr" ? "selected" : ""}>Turco</option>
-                </select>
-              </div>
-
-              ${user ? `
-              <div class="badge ${rolesApi.roleBadgeClass(user.rol)}" style="padding:0.35rem 0.55rem;">
-                <img class="avatar" src="${getAvatar(user.nombre)}" alt="${user.nombre}" style="width:24px; height:24px;" />
-                <span>${user.nombre}</span>
-                <strong>${user.rol.toUpperCase()}</strong>
-              </div>` : ""}
-            </div>
-          </div>
-        </header>
-
-        <main><div class="container" id="view"></div></main>
-
-        <footer class="footer">
-          <div class="container">
-            <strong>MediConnect</strong>
-            <div class="badges">
-              <span class="badge">SSL</span>
-              <span class="badge">RGPD</span>
-              <span class="badge">ISO 27001</span>
-            </div>
-            <div class="countries">
-              <img class="flag" src="https://flagcdn.com/24x18/co.png" alt="CO" />
-              <img class="flag" src="https://flagcdn.com/24x18/us.png" alt="US" />
-              <img class="flag" src="https://flagcdn.com/24x18/br.png" alt="BR" />
-            </div>
-          </div>
-        </footer>
+    const languageMarkup = `
+      <div class="lang-select">
+        <img class="flag" src="${flagByLang(state.lang)}" alt="lang" />
+        <select id="language-selector">
+          <option value="es" ${state.lang === "es" ? "selected" : ""}>Español</option>
+          <option value="en" ${state.lang === "en" ? "selected" : ""}>Inglés</option>
+          <option value="de" ${state.lang === "de" ? "selected" : ""}>Alemán</option>
+          <option value="it" ${state.lang === "it" ? "selected" : ""}>Italiano</option>
+          <option value="pl" ${state.lang === "pl" ? "selected" : ""}>Polaco</option>
+          <option value="pt" ${state.lang === "pt" ? "selected" : ""}>Portugués</option>
+          <option value="tr" ${state.lang === "tr" ? "selected" : ""}>Turco</option>
+        </select>
       </div>
-      <div id="toast" class="toast"></div>
     `;
+
+    if (user) {
+      root.innerHTML = `
+        <div class="app-shell sidebar-shell">
+          <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-logo">
+              <a class="logo" href="#/${user ? "" : "login"}">
+                <i data-lucide="cross"></i>
+                <span>WaySalud</span>
+              </a>
+            </div>
+            <nav class="sidebar-nav">${buildRoleNav(path, user, true)}</nav>
+          </aside>
+
+          <div class="main-with-sidebar">
+            <header class="topbar">
+              <button id="sidebar-toggle" class="hamburger-btn" type="button" aria-label="Abrir menú">
+                <i data-lucide="menu"></i>
+              </button>
+              <div class="topbar-right">
+                ${languageMarkup}
+                <span class="rol-badge ${roleClass(user.rol)}">${user.rol.toUpperCase()}</span>
+                <span class="badge" style="padding:0.35rem 0.55rem;">
+                  <img class="avatar" src="${getAvatar(user.nombre)}" alt="${user.nombre}" style="width:24px; height:24px;" />
+                  <span>${user.nombre}</span>
+                </span>
+              </div>
+            </header>
+
+            <main><div class="container" id="view"></div></main>
+          </div>
+
+          <div id="mobile-overlay" class="mobile-overlay"></div>
+        </div>
+        <div id="toast" class="toast"></div>
+      `;
+    } else {
+      const publicNav = `
+        ${navLink("/login", "Home", path)}
+        ${navLink("/login", "Quiénes Somos", path)}
+        ${navLink("/login", "Portafolio", path)}
+        ${navLink("/login", "Blog", path)}
+        ${navLink("/login", "Contáctanos", path)}
+        <a class="nav-link login-link" href="#/login">${tr("login")}</a>
+      `;
+
+      root.innerHTML = `
+        <div class="app-shell">
+          <header class="navbar" id="public-navbar">
+            <div class="container navbar-inner">
+              <a class="logo" href="#/login">
+                <i data-lucide="cross"></i>
+                <span>WaySalud</span>
+              </a>
+
+              <nav class="nav-links desktop-nav">${publicNav}</nav>
+
+              <div class="navbar-actions">
+                ${languageMarkup}
+                <button class="hamburger-btn" id="drawer-open" type="button" aria-label="Abrir menú">
+                  <i data-lucide="menu"></i>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <aside class="mobile-drawer" id="mobile-drawer">
+            <nav class="grid" style="gap:0.4rem;">${publicNav}</nav>
+          </aside>
+          <div id="mobile-overlay" class="mobile-overlay"></div>
+
+          <main><div class="container" id="view"></div></main>
+
+          <footer class="footer">
+            <div class="container footer-grid">
+              <div>
+                <strong>WaySalud</strong>
+                <p>Plataforma integral de telemedicina y gestión clínica.</p>
+                <div class="badges">
+                  <span class="badge">SSL</span>
+                  <span class="badge">RGPD</span>
+                  <span class="badge">ISO 27001</span>
+                </div>
+              </div>
+              <div>
+                <h4>Navegación</h4>
+                <a class="footer-link" href="#/login">Home</a>
+                <a class="footer-link" href="#/login">Quiénes somos</a>
+                <a class="footer-link" href="#/login">Portafolio</a>
+                <a class="footer-link" href="#/login">Blog</a>
+              </div>
+              <div>
+                <h4>Legal</h4>
+                <span class="footer-link">Política de privacidad</span>
+                <span class="footer-link">Ley 1581/2012</span>
+                <span class="footer-link">Ley 2015/2020</span>
+              </div>
+              <div>
+                <h4>Contacto</h4>
+                <span class="footer-link">comercial@waysalud.com</span>
+                <div class="countries">
+                  <img class="flag" src="https://flagcdn.com/24x18/co.png" alt="CO" />
+                  <img class="flag" src="https://flagcdn.com/24x18/us.png" alt="US" />
+                  <img class="flag" src="https://flagcdn.com/24x18/br.png" alt="BR" />
+                </div>
+              </div>
+            </div>
+            <div class="container footer-bottom">© 2024 WaySalud · Autoría: WaySalud · Todos los derechos reservados</div>
+          </footer>
+        </div>
+        <div id="toast" class="toast"></div>
+      `;
+    }
 
     document.getElementById("language-selector")?.addEventListener("change", async (e) => {
       state.lang = e.target.value;
@@ -799,11 +881,73 @@
       onRouteChange();
     });
 
+    const sidebar = document.getElementById("app-sidebar");
+    const overlay = document.getElementById("mobile-overlay");
+    const sidebarToggle = document.getElementById("sidebar-toggle");
+
+    sidebarToggle?.addEventListener("click", () => {
+      sidebar?.classList.toggle("open");
+      overlay?.classList.toggle("show");
+    });
+
+    const drawer = document.getElementById("mobile-drawer");
+    const drawerOpen = document.getElementById("drawer-open");
+    drawerOpen?.addEventListener("click", () => {
+      drawer?.classList.add("open");
+      overlay?.classList.add("show");
+    });
+
+    overlay?.addEventListener("click", () => {
+      drawer?.classList.remove("open");
+      sidebar?.classList.remove("open");
+      overlay.classList.remove("show");
+    });
+
+    if (!user) {
+      const navbar = document.getElementById("public-navbar");
+      const onScroll = () => {
+        navbar?.classList.toggle("scrolled", window.scrollY > 8);
+      };
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }
+
     initIcons();
   }
 
-  function buildRoleNav(currentPath, user) {
-  if (!user) return navLink("/login", tr("login"), currentPath);
+  function buildRoleNav(currentPath, user, sidebarMode = false) {
+    if (!user) return navLink("/login", tr("login"), currentPath);
+
+    if (sidebarMode && user.rol === "paciente") {
+      return [
+        navItem("/buscar", tr("searchDoctors"), currentPath, "search"),
+        navItem("/panel", tr("myAppointments"), currentPath, "calendar-days"),
+        navItem("/mi-historia", tr("myHistory"), currentPath, "file-heart"),
+        navItem("/urgencias", tr("urgent"), currentPath, "siren"),
+        navItem("/panel", tr("myProfile"), currentPath, "user"),
+        `<a href="#" class="nav-item" data-logout="1"><i class="nav-icon" data-lucide="log-out"></i><span>${tr("logout")}</span></a>`
+      ].join("");
+    }
+
+    if (sidebarMode && user.rol === "medico") {
+      return [
+        navItem("/mi-agenda", tr("myAgenda"), currentPath, "calendar-check"),
+        navItem("/mis-pacientes", tr("myPatients"), currentPath, "users"),
+        navItem("/panel-medico", tr("newConsultation"), currentPath, "stethoscope"),
+        navItem("/panel-medico", tr("myProfile"), currentPath, "user"),
+        `<a href="#" class="nav-item" data-logout="1"><i class="nav-icon" data-lucide="log-out"></i><span>${tr("logout")}</span></a>`
+      ].join("");
+    }
+
+    if (sidebarMode) {
+      return [
+        navItem("/admin", tr("dashboard"), currentPath, "layout-dashboard"),
+        navItem("/admin/usuarios", tr("users"), currentPath, "user-cog"),
+        navItem("/admin/especialidades", tr("specialties"), currentPath, "heart-pulse"),
+        navItem("/admin", tr("allRecords"), currentPath, "file-stack"),
+        `<a href="#" class="nav-item" data-logout="1"><i class="nav-icon" data-lucide="log-out"></i><span>${tr("logout")}</span></a>`
+      ].join("");
+    }
 
     if (user.rol === "paciente") {
       return [
@@ -919,10 +1063,13 @@
       return;
     }
 
-    view.innerHTML = `
-      <section class="card" style="max-width:560px; margin:0 auto;">
-        <h2 class="section-title">${tr("loginTitle")}</h2>
-        <p class="section-subtitle">${tr("loginSubtitle")}</p>
+    renderHome();
+    view.insertAdjacentHTML(
+      "afterbegin",
+      `
+      <section class="card" style="max-width:680px; margin:0 auto 1rem;">
+        <h2 class="section-title">Ingreso a WaySalud</h2>
+        <p class="section-subtitle">Acceso por rol con sesión simulada en localStorage</p>
         <form id="login-form" class="grid" style="gap:0.6rem;">
           <input id="login-email" type="email" placeholder="${tr("email")}" required />
           <input id="login-pass" type="password" placeholder="${tr("password")}" required />
@@ -934,7 +1081,8 @@
           <button class="btn-outline" data-demo-login="admin">${tr("enterAsAdmin")}</button>
         </div>
       </section>
-    `;
+    `
+    );
 
     view.querySelector("#login-form").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -946,9 +1094,9 @@
     view.querySelectorAll("[data-demo-login]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const examples = {
-          paciente: ["laura@mediconnect.co", "paciente123"],
-          medico: ["carlos@mediconnect.co", "medico123"],
-          admin: ["admin@mediconnect.co", "admin123"]
+          paciente: ["laura@waysalud.com", "paciente123"],
+          medico: ["carlos@waysalud.com", "medico123"],
+          admin: ["admin@waysalud.com", "admin123"]
         };
         const [email, pass] = examples[btn.dataset.demoLogin];
         view.querySelector("#login-email").value = email;
@@ -975,17 +1123,260 @@
       <section class="hero">
         <div class="hero-split">
           <div>
+            <span class="hero-badge">Software WaySalud</span>
             <h1>${tr("homeTitle")}</h1>
             <p>${tr("homeSubtitle")}</p>
-            <div class="inline-actions" style="margin-top:0.8rem;">
+            <div class="inline-actions">
               <a class="btn-primary" href="#/buscar">${tr("findSpecialist")}</a>
-              <a class="btn-danger" href="#/urgencias">${tr("urgentNow")}</a>
             </div>
           </div>
-          <img class="context-media" src="${CONTEXT_IMAGES.home}" alt="Telemedicina con especialista" />
+          <div class="hero-mockup">
+            <img class="context-media" src="${CONTEXT_IMAGES.home}" alt="Telemedicina con especialista" />
+            <span class="mockup-badge b1">Agenda en línea</span>
+            <span class="mockup-badge b2">RIPS</span>
+            <span class="mockup-badge b3">Docencia-Serv.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="aliados-wrap">
+        <div class="aliados-track">
+          <div class="aliado-item">Aliado Norte</div>
+          <div class="aliado-item">Clínica Vital</div>
+          <div class="aliado-item">Hospital Central</div>
+          <div class="aliado-item">Salud Plus</div>
+          <div class="aliado-item">Red Médica</div>
+          <div class="aliado-item">Aliado Norte</div>
+          <div class="aliado-item">Clínica Vital</div>
+          <div class="aliado-item">Hospital Central</div>
+          <div class="aliado-item">Salud Plus</div>
+          <div class="aliado-item">Red Médica</div>
+        </div>
+      </section>
+
+      <section class="why-section" style="margin-top:1rem;">
+        <div class="center-head">
+          <h2 class="section-title">¿Por qué WaySalud?</h2>
+          <p class="section-subtitle">Diseñado para pacientes, médicos e instituciones con enfoque en experiencia y resultados.</p>
+        </div>
+        <div class="segment-grid">
+          <article class="segmento-card">
+            <i data-lucide="building-2" class="segmento-icon"></i>
+            <h3>Instituciones</h3>
+            <p>Gestión clínica unificada, reportes y trazabilidad completa.</p>
+            <div class="segmento-media"><i data-lucide="bar-chart-3"></i></div>
+          </article>
+          <article class="segmento-card">
+            <i data-lucide="stethoscope" class="segmento-icon"></i>
+            <h3>Profesionales</h3>
+            <p>Agenda inteligente, historia clínica y seguimiento continuo.</p>
+            <div class="segmento-media"><i data-lucide="calendar-check-2"></i></div>
+          </article>
+          <article class="segmento-card">
+            <i data-lucide="heart-pulse" class="segmento-icon"></i>
+            <h3>Pacientes</h3>
+            <p>Atención oportuna, teleconsulta y experiencia digital intuitiva.</p>
+            <div class="segmento-media"><i data-lucide="shield-check"></i></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:1rem;">
+        <h2 class="section-title">Características</h2>
+        <div class="tab-nav" id="feature-tabs">
+          <button class="tab-btn active" data-feature-tab="agendamiento">Agendamiento</button>
+          <button class="tab-btn" data-feature-tab="historia">Historia Clínica</button>
+          <button class="tab-btn" data-feature-tab="firma">Firma Digital</button>
+          <button class="tab-btn" data-feature-tab="teleconsulta">Teleconsulta</button>
+          <button class="tab-btn" data-feature-tab="reportes">Reportes</button>
+          <button class="tab-btn" data-feature-tab="rips">RIPS</button>
+          <button class="tab-btn" data-feature-tab="alcance">Alcance</button>
+        </div>
+        <div class="feature-pane" id="feature-pane"></div>
+      </section>
+
+      <section style="margin-top:1rem;">
+        <div class="modalidades-grid">
+          <article class="card modalidad-card">
+            <h3>🏥 Intramural</h3>
+            <p>Atención en sedes clínicas con trazabilidad completa.</p>
+            <a class="learn-more" href="#/buscar">Aprende más →</a>
+          </article>
+          <article class="card modalidad-card">
+            <h3>🏠 Salud en Casa</h3>
+            <p>Visitas y seguimiento remoto con historia clínica integrada.</p>
+            <a class="learn-more" href="#/buscar">Aprende más →</a>
+          </article>
+          <article class="card modalidad-card">
+            <h3>📹 Teleconsulta</h3>
+            <p>Consulta virtual segura y comunicación médico-paciente continua.</p>
+            <a class="learn-more" href="#/consulta">Aprende más →</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-banner">
+        <h2>¿Listo para transformar tu atención en salud?</h2>
+        <a class="btn-outline" href="#/buscar">${tr("findSpecialist")}</a>
+      </section>
+
+      <section class="card" style="margin-top:1rem;">
+        <div class="center-head">
+          <h2 class="section-title">Cómo funciona</h2>
+        </div>
+        <div class="how-video"><i data-lucide="play-circle"></i></div>
+        <div class="counter-grid" id="counter-grid">
+          <div class="counter-item"><strong data-counter="1200">0</strong><div>Consultas/mes</div></div>
+          <div class="counter-item"><strong data-counter="95">0</strong><div>Satisfacción (%)</div></div>
+          <div class="counter-item"><strong data-counter="40">0</strong><div>Menos inasistencias (%)</div></div>
+          <div class="counter-item"><strong data-counter="24">0</strong><div>Ciudades activas</div></div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:1rem;">
+        <div class="contact-grid">
+          <div>
+            <div class="center-head" style="text-align:left; margin:0 0 1rem;">
+              <h2 class="section-title">Contáctanos</h2>
+            </div>
+            <form id="home-contact-form" class="grid" style="gap:0.75rem;">
+              <input class="form-input" placeholder="Nombre completo" required />
+              <div class="form-row">
+                <input class="form-input" type="tel" placeholder="Celular" required />
+                <input class="form-input" type="email" placeholder="Email" required />
+              </div>
+              <div class="inline-actions" style="gap:1rem;">
+                <label><input type="radio" name="perfil-contacto" value="estudiante" checked /> Estudiante</label>
+                <label><input type="radio" name="perfil-contacto" value="profesional" /> Profesional</label>
+                <label><input type="radio" name="perfil-contacto" value="empresa" /> Empresa</label>
+              </div>
+              <textarea class="form-input" rows="3" placeholder="Comentarios adicionales"></textarea>
+              <label><input type="checkbox" required /> Autorizo tratamiento de datos (Ley 1581)</label>
+              <button type="submit" class="btn-submit">Aceptar</button>
+            </form>
+          </div>
+          <div class="card" style="display:grid; place-items:center; background:var(--ws-teal-bg);">
+            <i data-lucide="headset" style="width:64px; height:64px; color:var(--ws-azul);"></i>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:1rem;">
+        <h2 class="section-title">Explora WaySalud</h2>
+        <div class="bento-grid">
+          <a class="bento-cell" href="#/buscar"><span class="bento-arrow">↗</span><h3>Buscar especialistas</h3><p>Encuentra disponibilidad en segundos.</p></a>
+          <a class="bento-cell" href="#/agendar"><span class="bento-arrow">↗</span><h3>Agendar</h3><p>Reserva en tres pasos.</p></a>
+          <a class="bento-cell" href="#/mi-historia"><span class="bento-arrow">↗</span><h3>Historia clínica</h3><p>Consulta tu evolución médica.</p></a>
+          <a class="bento-cell" href="#/planes"><span class="bento-arrow">↗</span><h3>Planes</h3><p>Opciones para profesionales e instituciones.</p></a>
+          <a class="bento-cell" href="#/urgencias"><span class="bento-arrow">↗</span><h3>Urgencias</h3><p>Conexión inmediata con triage digital.</p></a>
         </div>
       </section>
     `;
+
+    setupFeatureTabs();
+    setupCounters();
+    document.getElementById("home-contact-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      showToast("Solicitud enviada correctamente");
+    });
+  }
+
+  function setupFeatureTabs() {
+    const pane = document.getElementById("feature-pane");
+    const tabs = document.querySelectorAll("[data-feature-tab]");
+    if (!pane || !tabs.length) return;
+
+    const map = {
+      agendamiento: {
+        title: "Agendamiento inteligente",
+        points: ["Disponibilidad en tiempo real", "Confirmación automática", "Recordatorios multicanal"],
+        impact: "Reduce 40% las inasistencias"
+      },
+      historia: {
+        title: "Historia clínica unificada",
+        points: ["Evolución longitudinal", "Adjuntos clínicos", "Control por roles"],
+        impact: "Mejora continuidad asistencial"
+      },
+      firma: {
+        title: "Firma digital",
+        points: ["Consentimientos en línea", "Recetas y órdenes", "Trazabilidad jurídica"],
+        impact: "Agiliza cierres de consulta"
+      },
+      teleconsulta: {
+        title: "Teleconsulta segura",
+        points: ["Videollamada integrada", "Chat clínico", "Sala de espera virtual"],
+        impact: "Cobertura remota ampliada"
+      },
+      reportes: {
+        title: "Reportes ejecutivos",
+        points: ["Indicadores clave", "Gráficas dinámicas", "Exportación operativa"],
+        impact: "Decisiones con datos en tiempo real"
+      },
+      rips: {
+        title: "RIPS",
+        points: ["Estructuración estandarizada", "Validación de datos", "Integración administrativa"],
+        impact: "Reduce reprocesos en facturación"
+      },
+      alcance: {
+        title: "Alcance institucional",
+        points: ["Intramural", "Salud en casa", "Telemedicina"],
+        impact: "Modelo híbrido escalable"
+      }
+    };
+
+    const render = (key) => {
+      const cfg = map[key] || map.agendamiento;
+      pane.innerHTML = `
+        <div class="feature-visual"><i data-lucide="monitor-smartphone"></i></div>
+        <div>
+          <h3>${cfg.title}</h3>
+          <ul class="feature-list">
+            ${cfg.points.map((p) => `<li>✓ ${p}</li>`).join("")}
+          </ul>
+          <p><strong>${cfg.impact}</strong></p>
+        </div>
+      `;
+      initIcons();
+    };
+
+    tabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabs.forEach((x) => x.classList.remove("active"));
+        btn.classList.add("active");
+        render(btn.dataset.featureTab);
+      });
+    });
+
+    render("agendamiento");
+  }
+
+  function setupCounters() {
+    const counters = document.querySelectorAll("[data-counter]");
+    if (!counters.length) return;
+
+    const animateCounter = (el) => {
+      const target = Number(el.dataset.counter || 0);
+      const duration = 1100;
+      const start = performance.now();
+      const step = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const value = Math.round(target * progress);
+        el.textContent = value.toString();
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+
+    counters.forEach((el) => observer.observe(el));
   }
 
   function renderBuscar() {
@@ -1167,7 +1558,7 @@
       });
       agendaApi.saveCitas(citas);
 
-      state.appointment = { specialist: sp, roomName: `MediConnect-${sp.fullName.replace(/\W+/g, "")}-${Date.now()}`, patientName: user.nombre };
+      state.appointment = { specialist: sp, roomName: `WaySalud-${sp.fullName.replace(/\W+/g, "")}-${Date.now()}`, patientName: user.nombre };
   showToast(tr("appointmentConfirmed"));
       location.hash = type === "video" ? "#/consulta" : type === "chat" ? "#/chat" : "#/panel";
     });
@@ -1181,7 +1572,7 @@
       <section class="card" style="margin-top:1rem;"><div id="jitsi-container"></div></section>
     `;
     startCountdown(20, "w-count", () => (view.querySelector("#start-video").disabled = false));
-    view.querySelector("#start-video").addEventListener("click", () => mountJitsi("jitsi-container", appointment?.roomName || `MediConnect-Demo-${Date.now()}`, appointment?.patientName || tr("patient")));
+    view.querySelector("#start-video").addEventListener("click", () => mountJitsi("jitsi-container", appointment?.roomName || `WaySalud-Demo-${Date.now()}`, appointment?.patientName || tr("patient")));
   }
 
   function renderChat() {
@@ -1197,7 +1588,7 @@
   function renderUrgencias() {
   document.getElementById("view").innerHTML = `<section class="card"><h2 class="section-title">${tr("urgent")}</h2><div class="grid grid-2" style="align-items:center;"><div><div class="countdown" id="urgent-count">04:00</div><button class="btn-danger" id="launch-urgent">${tr("urgentNow")}</button></div><img class="context-media" src="${CONTEXT_IMAGES.urgent}" alt="Atención médica de urgencia" /></div></section><section class="card" style="margin-top:1rem;"><div id="urgent-jitsi-container"></div></section>`;
     startCountdown(240, "urgent-count");
-    document.getElementById("launch-urgent").addEventListener("click", () => mountJitsi("urgent-jitsi-container", `MediConnect-Guardia-${Date.now()}`, `${tr("patient")} ${tr("urgent")}`));
+    document.getElementById("launch-urgent").addEventListener("click", () => mountJitsi("urgent-jitsi-container", `WaySalud-Guardia-${Date.now()}`, `${tr("patient")} ${tr("urgent")}`));
   }
 
   function renderPlanes() {
@@ -1207,7 +1598,7 @@
 
   function renderPanelPaciente(user) {
   const citas = agendaApi.getCitas().filter((c) => c.pacienteId === user.id && c.estado !== "cancelada");
-  document.getElementById("view").innerHTML = `<section class="card"><img class="context-media" src="${CONTEXT_IMAGES.patientPanel}" alt="Paciente en consulta remota" style="margin-bottom:0.8rem;" /><h2 class="section-title">${tr("patientPanel")}</h2><p>${tr("upcomingAppointments")}: <strong>${citas.length}</strong></p><div class="inline-actions"><a class="btn-outline" href="#/mi-historia">${tr("viewMyHistory")}</a><a class="btn-outline" href="#/buscar">${tr("scheduleNewAppointment")}</a></div></section><section class="card" style="margin-top:1rem;"><h3>${tr("myUpcomingAppointments")}</h3>${citas.map((c) => `<div class="card" style="margin-bottom:0.5rem;"><strong>${new Date(c.fechaInicio).toLocaleString()}</strong> · ${c.medicoNombre} · ${c.tipo} · ${c.estado}<div class="inline-actions" style="margin-top:0.4rem;"><button class="btn-outline" data-cancel-cita="${c.id}">${tr("cancel")}</button><button class="btn-outline" data-reschedule-cita="${c.id}">${tr("reschedule")}</button></div></div>`).join("") || `<p>${tr("noAppointments")}</p>`}</section><section class="grid grid-2" style="margin-top:1rem;"><article class="card"><canvas id="patient-line"></canvas></article><article class="card"><div id="clinic-map" style="height:300px;"></div></article></section>`;
+  document.getElementById("view").innerHTML = `<section class="grid grid-3"><article class="stat-card"><span class="stat-label">${tr("upcomingAppointments")}</span><strong class="stat-value">${citas.length}</strong><span class="stat-delta">+8% vs mes anterior</span></article><article class="stat-card"><span class="stat-label">Estado</span><strong class="stat-value">Activo</strong><span class="stat-delta">Cuenta operativa</span></article><article class="stat-card"><span class="stat-label">Canal</span><strong class="stat-value">Digital</strong><span class="stat-delta">Video + chat + presencial</span></article></section><section class="card" style="margin-top:1rem;"><img class="context-media" src="${CONTEXT_IMAGES.patientPanel}" alt="Paciente en consulta remota" style="margin-bottom:0.8rem;" /><h2 class="section-title">${tr("patientPanel")}</h2><p>${tr("upcomingAppointments")}: <strong>${citas.length}</strong></p><div class="inline-actions"><a class="btn-outline" href="#/mi-historia">${tr("viewMyHistory")}</a><a class="btn-outline" href="#/buscar">${tr("scheduleNewAppointment")}</a></div></section><section class="card" style="margin-top:1rem;"><h3>${tr("myUpcomingAppointments")}</h3>${citas.map((c) => `<div class="card" style="margin-bottom:0.5rem;"><strong>${new Date(c.fechaInicio).toLocaleString()}</strong> · ${c.medicoNombre} · ${c.tipo} · ${c.estado}<div class="inline-actions" style="margin-top:0.4rem;"><button class="btn-outline" data-cancel-cita="${c.id}">${tr("cancel")}</button><button class="btn-outline" data-reschedule-cita="${c.id}">${tr("reschedule")}</button></div></div>`).join("") || `<p>${tr("noAppointments")}</p>`}</section><section class="grid grid-2" style="margin-top:1rem;"><article class="card"><canvas id="patient-line"></canvas></article><article class="card"><div id="clinic-map" style="height:300px;"></div></article></section>`;
 
     document.querySelectorAll("[data-cancel-cita]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1244,7 +1635,7 @@
 
   function renderPanelMedico(user) {
     const citas = agendaApi.getCitas().filter((c) => c.medicoId === user.id && c.estado !== "cancelada");
-    document.getElementById("view").innerHTML = `<section class="card"><img class="context-media" src="${CONTEXT_IMAGES.doctorPanel}" alt="Médico revisando su panel" style="margin-bottom:0.8rem;" /><h2 class="section-title">${tr("doctorPanel")}</h2><p>${tr("activeAppointments")}: <strong>${citas.length}</strong></p><div class="inline-actions"><a class="btn-outline" href="#/mi-agenda">${tr("manageAgenda")}</a><a class="btn-outline" href="#/mis-pacientes">${tr("viewAssignedPatients")}</a></div></section><section class="grid grid-2" style="margin-top:1rem;"><article class="card"><canvas id="doctor-line"></canvas></article><article class="card"><canvas id="doctor-donut"></canvas></article></section>`;
+    document.getElementById("view").innerHTML = `<section class="grid grid-3"><article class="stat-card"><span class="stat-label">${tr("activeAppointments")}</span><strong class="stat-value">${citas.length}</strong><span class="stat-delta">+12% productividad</span></article><article class="stat-card"><span class="stat-label">Agenda</span><strong class="stat-value">Completa</strong><span class="stat-delta">Slots optimizados</span></article><article class="stat-card"><span class="stat-label">Satisfacción</span><strong class="stat-value">95%</strong><span class="stat-delta">Tendencia positiva</span></article></section><section class="card" style="margin-top:1rem;"><img class="context-media" src="${CONTEXT_IMAGES.doctorPanel}" alt="Médico revisando su panel" style="margin-bottom:0.8rem;" /><h2 class="section-title">${tr("doctorPanel")}</h2><p>${tr("activeAppointments")}: <strong>${citas.length}</strong></p><div class="inline-actions"><a class="btn-outline" href="#/mi-agenda">${tr("manageAgenda")}</a><a class="btn-outline" href="#/mis-pacientes">${tr("viewAssignedPatients")}</a></div></section><section class="grid grid-2" style="margin-top:1rem;"><article class="card"><canvas id="doctor-line"></canvas></article><article class="card"><canvas id="doctor-donut"></canvas></article></section>`;
     state.chartInstances.push(new Chart(document.getElementById("doctor-line"), { type: "line", data: { labels: ["Ene", "Feb", "Mar", "Abr", "May"], datasets: [{ label: tr("consults"), data: [18, 22, 21, 28, 31], borderColor: "#1a73e8" }] } }));
     state.chartInstances.push(new Chart(document.getElementById("doctor-donut"), { type: "doughnut", data: { labels: [tr("videoConsultation"), tr("chat"), tr("onsite")], datasets: [{ data: [65, 20, 15], backgroundColor: ["#1a73e8", "#60a5fa", "#bfdbfe"] }] } }));
   }

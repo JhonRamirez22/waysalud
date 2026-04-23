@@ -46,4 +46,4 @@ Plataforma de telemedicina en **HTML + CSS + JavaScript vanilla** con enrutamien
 - No requiere backend ni instalación de dependencias.
 - Los adjuntos se simulan guardando solo nombre de archivo.
 - La videollamada usa Jitsi en modo embebido sin API key.
-- Las imágenes se descargaron desde Unsplash y se almacenan localmente en `assets/images`.
+- Las imágenes se descargaron de bancos de imágenes libres y se almacenan localmente en `assets/images`.

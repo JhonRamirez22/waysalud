@@ -168,11 +168,56 @@ function saveJSON(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
+function normalizeEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
+
+function getBaseUsers() {
+  return USUARIOS_BASE.map((u) => ({ ...u }));
+}
+
+function mergeBaseUsers(users) {
+  const list = Array.isArray(users) ? users.map((u) => ({ ...u })) : [];
+  const byEmail = new Map(list.filter((u) => u?.email).map((u) => [normalizeEmail(u.email), u]));
+
+  getBaseUsers().forEach((baseUser) => {
+    const key = normalizeEmail(baseUser.email);
+    const existing = byEmail.get(key);
+    if (!existing) {
+      list.push(baseUser);
+      byEmail.set(key, baseUser);
+      return;
+    }
+
+    if (!existing.nombre) existing.nombre = baseUser.nombre;
+    if (!existing.password) existing.password = baseUser.password;
+    if (!existing.rol) existing.rol = baseUser.rol;
+    if (typeof existing.activo === "undefined") existing.activo = true;
+    if (baseUser.especialidad && !existing.especialidad) existing.especialidad = baseUser.especialidad;
+    if (Array.isArray(baseUser.pacientesIds) && !Array.isArray(existing.pacientesIds) && existing.rol === "medico") {
+      existing.pacientesIds = [...baseUser.pacientesIds];
+    }
+    if (baseUser.historiaId && !existing.historiaId) existing.historiaId = baseUser.historiaId;
+  });
+
+  return list;
+}
+
 function initData() {
-  if (!localStorage.getItem(STORAGE_KEYS.usuarios)) saveJSON(STORAGE_KEYS.usuarios, USUARIOS_BASE);
+  saveJSON(STORAGE_KEYS.usuarios, mergeBaseUsers(getUsuarios()));
   if (!localStorage.getItem(STORAGE_KEYS.historias)) saveJSON(STORAGE_KEYS.historias, HISTORIAS_BASE);
   if (!localStorage.getItem(STORAGE_KEYS.citas)) saveJSON(STORAGE_KEYS.citas, CITAS_BASE);
   if (!localStorage.getItem(STORAGE_KEYS.especialidades)) saveJSON(STORAGE_KEYS.especialidades, ESPECIALIDADES_BASE);
+
+  const currentSession = getSession();
+  if (currentSession?.email) {
+    const refreshedUser = mergeBaseUsers(getUsuarios()).find((u) => normalizeEmail(u.email) === normalizeEmail(currentSession.email));
+    if (!refreshedUser || refreshedUser.activo === false) {
+      logout();
+    } else {
+      setSession(refreshedUser);
+    }
+  }
 
   // Configuración de agenda por médico.
   const users = getUsuarios();
@@ -201,7 +246,8 @@ function saveUsuarios(list) {
 }
 
 function findUserByEmail(email) {
-  return getUsuarios().find((u) => u.email.toLowerCase() === email.toLowerCase());
+  const normalized = normalizeEmail(email);
+  return mergeBaseUsers(getUsuarios()).find((u) => normalizeEmail(u.email) === normalized) || getBaseUsers().find((u) => normalizeEmail(u.email) === normalized);
 }
 
 function login(email, password) {

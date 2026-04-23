@@ -48,3 +48,4 @@ Plataforma de telemedicina en **HTML + CSS + JavaScript vanilla** con enrutamien
 - La videollamada usa Jitsi en modo embebido sin API key.
 - Las imágenes se descargaron desde Unsplash y se almacenan localmente en `assets/images`.
 # waysalud
+# waysalud
